@@ -60,7 +60,7 @@ impl PreparedStatement {
         unsafe {
             let mut name = mem::zeroed();
             let mut name_length = mem::zeroed();
-            cass_prepared_parameter_name(self.0, index, &mut name, &mut name_length)
+            cass_prepared_parameter_name(self.0, index as u64, &mut name, &mut name_length)
                 .to_result(())
                 .and_then(|_| {
                     Ok(str::from_utf8(slice::from_raw_parts(
@@ -76,7 +76,7 @@ impl PreparedStatement {
     /// Returns a reference to the data type of the parameter. Do not free
     /// this reference as it is bound to the lifetime of the prepared.
     pub fn parameter_data_type(&self, index: usize) -> ConstDataType {
-        unsafe { ConstDataType::build(cass_prepared_parameter_data_type(self.0, index)) }
+        unsafe { ConstDataType::build(cass_prepared_parameter_data_type(self.0, index as u64)) }
     }
 
     /// Gets the data type of a parameter for the specified name.
@@ -89,7 +89,7 @@ impl PreparedStatement {
             ConstDataType::build(cass_prepared_parameter_data_type_by_name_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
             ))
         }
     }

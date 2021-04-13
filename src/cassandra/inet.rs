@@ -91,7 +91,7 @@ impl FromStr for Inet {
             let mut inet = mem::zeroed();
 
             let s_ptr = s.as_ptr() as *const c_char;
-            cass_inet_from_string_n(s_ptr, s.len(), &mut inet)
+            cass_inet_from_string_n(s_ptr, s.len() as u64, &mut inet)
                 .to_result(())
                 .and_then(|_| Ok(Inet(inet)))
         }

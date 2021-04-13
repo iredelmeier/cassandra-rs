@@ -164,7 +164,7 @@ impl str::FromStr for Uuid {
         unsafe {
             let mut uuid = mem::zeroed();
             let str_ptr = str.as_ptr() as *const c_char;
-            cass_uuid_from_string_n(str_ptr, str.len(), &mut uuid)
+            cass_uuid_from_string_n(str_ptr, str.len() as u64, &mut uuid)
                 .to_result(())
                 .and_then(|_| Ok(Uuid(uuid)))
         }

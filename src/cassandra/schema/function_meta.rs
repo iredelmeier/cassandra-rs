@@ -116,7 +116,7 @@ impl FunctionMeta {
 
     /// Gets the number of arguments this function takes.
     pub fn argument_count(&self) -> usize {
-        unsafe { cass_function_meta_argument_count(self.0) }
+        unsafe { cass_function_meta_argument_count(self.0) as usize }
     }
 
     /// Gets the function's argument name and type for the provided index.
@@ -126,8 +126,14 @@ impl FunctionMeta {
             let mut name_length = mem::zeroed();
             let mut data_type = mem::zeroed();
 
-            cass_function_meta_argument(self.0, index, &mut name, &mut name_length, &mut data_type)
-                .to_result(())
+            cass_function_meta_argument(
+                self.0,
+                index as u64,
+                &mut name,
+                &mut name_length,
+                &mut data_type,
+            )
+            .to_result(())
         }
     }
 
@@ -139,7 +145,7 @@ impl FunctionMeta {
             ConstDataType::build(cass_function_meta_argument_type_by_name_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
             ))
         }
     }
@@ -158,7 +164,7 @@ impl FunctionMeta {
             Value::build(cass_function_meta_field_by_name_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
             ))
         }
     }

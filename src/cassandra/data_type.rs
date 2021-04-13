@@ -103,12 +103,12 @@ impl DataType {
 
     /// Creates a new tuple data type.
     pub fn new_tuple(item_count: usize) -> Self {
-        unsafe { DataType(cass_data_type_new_tuple(item_count)) }
+        unsafe { DataType(cass_data_type_new_tuple(item_count as u64)) }
     }
 
     /// Creates a new UDT (user defined type) data type.
     pub fn new_udt(field_count: usize) -> DataType {
-        unsafe { DataType(cass_data_type_new_udt(field_count)) }
+        unsafe { DataType(cass_data_type_new_udt(field_count as u64)) }
     }
 
     /// Gets the value type of the specified data type.
@@ -126,7 +126,7 @@ impl DataType {
             let err = cass_data_type_type_name(
                 data_type.0,
                 &mut type_name2.as_ptr(),
-                &mut (type_name2.as_bytes().len()),
+                &mut (type_name2.as_bytes().len() as u64),
             );
             err.to_result(())
         }
@@ -142,7 +142,7 @@ impl DataType {
         unsafe {
             let type_name_str = type_name.into();
             let type_name_ptr = type_name_str.as_ptr() as *const c_char;
-            cass_data_type_set_type_name_n(data_type.0, type_name_ptr, type_name_str.len())
+            cass_data_type_set_type_name_n(data_type.0, type_name_ptr, type_name_str.len() as u64)
                 .to_result(())
         }
     }
@@ -159,7 +159,7 @@ impl DataType {
             cass_data_type_keyspace(
                 data_type.0,
                 &mut (keyspace2.as_ptr()),
-                &mut (keyspace2.as_bytes().len()),
+                &mut (keyspace2.as_bytes().len() as u64),
             )
             .to_result(())
         }
@@ -175,7 +175,7 @@ impl DataType {
         unsafe {
             let keyspace_str = keyspace.into();
             let keyspace_ptr = keyspace_str.as_ptr() as *const c_char;
-            cass_data_type_set_keyspace_n(data_type.0, keyspace_ptr, keyspace_str.len())
+            cass_data_type_set_keyspace_n(data_type.0, keyspace_ptr, keyspace_str.len() as u64)
                 .to_result(())
         }
     }
@@ -192,7 +192,7 @@ impl DataType {
             cass_data_type_class_name(
                 data_type.0,
                 &mut class_name2.as_ptr(),
-                &mut (class_name2.as_bytes().len()),
+                &mut (class_name2.as_bytes().len() as u64),
             )
             .to_result(())
         }
@@ -208,7 +208,7 @@ impl DataType {
         unsafe {
             let class_name_str = class_name.into();
             let class_name_ptr = class_name_str.as_ptr() as *const c_char;
-            cass_data_type_set_class_name_n(self.0, class_name_ptr, class_name_str.len())
+            cass_data_type_set_class_name_n(self.0, class_name_ptr, class_name_str.len() as u64)
                 .to_result(())
         }
     }
@@ -218,7 +218,7 @@ impl DataType {
     ///
     /// <b>Note:</b> Only valid for UDT, tuple and collection data types.
     pub fn sub_type_count<S>(&self) -> usize {
-        unsafe { cass_data_sub_type_count(self.0) }
+        unsafe { cass_data_sub_type_count(self.0) as usize }
     }
 
     /// Gets the sub-data type of a UDT (user defined type), tuple or collection at
@@ -227,7 +227,7 @@ impl DataType {
     /// <b>Note:</b> Only valid for UDT, tuple and collection data types.
     pub fn sub_data_type(&self, index: usize) -> ConstDataType {
         // TODO: can return NULL
-        unsafe { ConstDataType::build(cass_data_type_sub_data_type(self.0, index)) }
+        unsafe { ConstDataType::build(cass_data_type_sub_data_type(self.0, index as u64)) }
     }
 
     /// Gets the sub-data type of a UDT (user defined type) at the specified index.
@@ -244,7 +244,7 @@ impl DataType {
             ConstDataType::build(cass_data_type_sub_data_type_by_name_n(
                 data_type.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
             ))
         }
     }
@@ -260,9 +260,9 @@ impl DataType {
             let name2 = CString::new(name.into())?;
             cass_data_type_sub_type_name(
                 data_type.0,
-                index,
+                index as u64,
                 &mut name2.as_ptr(),
-                &mut (name2.as_bytes().len()),
+                &mut (name2.as_bytes().len() as u64),
             )
             .to_result(())
         }
@@ -285,8 +285,13 @@ impl DataType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_data_type_add_sub_type_by_name_n(self.0, name_ptr, name_str.len(), sub_data_type.0)
-                .to_result(())
+            cass_data_type_add_sub_type_by_name_n(
+                self.0,
+                name_ptr,
+                name_str.len() as u64,
+                sub_data_type.0,
+            )
+            .to_result(())
         }
     }
 
@@ -313,7 +318,7 @@ impl DataType {
             cass_data_type_add_sub_value_type_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 typ.inner(),
             )
             .to_result(())

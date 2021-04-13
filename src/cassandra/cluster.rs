@@ -127,7 +127,8 @@ impl Cluster {
     pub fn set_contact_points(&mut self, contact_points: &str) -> Result<&mut Self> {
         unsafe {
             let cp_ptr = contact_points.as_ptr() as *const c_char;
-            let err = cass_cluster_set_contact_points_n(self.0, cp_ptr, contact_points.len());
+            let err =
+                cass_cluster_set_contact_points_n(self.0, cp_ptr, contact_points.len() as u64);
             err.to_result(self)
         }
     }
@@ -139,7 +140,7 @@ impl Cluster {
     pub fn set_local_address(&mut self, name: &str) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let err = cass_cluster_set_local_address_n(self.0, name_ptr, name.len());
+            let err = cass_cluster_set_local_address_n(self.0, name_ptr, name.len() as u64);
             err.to_result(self)
         }
     }
@@ -180,7 +181,7 @@ impl Cluster {
                 session.inner(),
                 self.inner(),
                 keyspace_ptr,
-                keyspace.len(),
+                keyspace.len() as u64,
             )
         };
         let connect_future = CassFuture::build(session, connect_keyspace);
@@ -373,9 +374,9 @@ impl Cluster {
             cass_cluster_set_credentials_n(
                 self.0,
                 username_ptr,
-                username.len(),
+                username.len() as u64,
                 password_ptr,
-                password.len(),
+                password.len() as u64,
             );
         }
         Ok(self)
@@ -414,7 +415,7 @@ impl Cluster {
                 cass_cluster_set_load_balance_dc_aware_n(
                     self.0,
                     local_dc_ptr,
-                    local_dc.len(),
+                    local_dc.len() as u64,
                     used_hosts_per_remote_dc,
                     if allow_remote_dcs_for_local_cl {
                         cass_true

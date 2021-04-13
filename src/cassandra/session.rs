@@ -113,7 +113,7 @@ impl Session {
         let prepare_future = {
             let query_ptr = query.as_ptr() as *const c_char;
             CassFuture::build(self.clone(), unsafe {
-                cass_session_prepare_n(self.inner(), query_ptr, query.len())
+                cass_session_prepare_n(self.inner(), query_ptr, query.len() as u64)
             })
         };
         prepare_future.await

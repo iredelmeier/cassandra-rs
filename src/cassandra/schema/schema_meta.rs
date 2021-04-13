@@ -50,7 +50,7 @@ impl SchemaMeta {
             KeyspaceMeta::build(cass_schema_meta_keyspace_by_name_n(
                 self.0,
                 keyspace_ptr,
-                keyspace.len(),
+                keyspace.len() as u64,
             ))
         }
     }

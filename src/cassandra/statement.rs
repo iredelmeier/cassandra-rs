@@ -76,7 +76,7 @@ struct StatementInner(*mut _Statement);
 impl StatementInner {
     fn new(query: &str, parameter_count: usize) -> Self {
         let query_ptr = query.as_ptr() as *const c_char;
-        Self(unsafe { cass_statement_new_n(query_ptr, query.len(), parameter_count) })
+        Self(unsafe { cass_statement_new_n(query_ptr, query.len() as u64, parameter_count as u64) })
     }
 }
 
@@ -371,7 +371,7 @@ impl Statement {
     /// This is not necessary for prepared statements, as the key
     /// parameters are determined in the metadata processed in the prepare phase.
     pub fn add_key_index(&mut self, index: usize) -> Result<&mut Self> {
-        unsafe { cass_statement_add_key_index(self.inner(), index).to_result(self) }
+        unsafe { cass_statement_add_key_index(self.inner(), index as u64).to_result(self) }
     }
 
     /// Sets the statement's keyspace for use with token-aware routing.
@@ -381,7 +381,7 @@ impl Statement {
     pub fn set_keyspace(&mut self, keyspace: String) -> Result<&mut Self> {
         unsafe {
             let keyspace_ptr = keyspace.as_ptr() as *const c_char;
-            cass_statement_set_keyspace_n(self.inner(), keyspace_ptr, keyspace.len())
+            cass_statement_set_keyspace_n(self.inner(), keyspace_ptr, keyspace.len() as u64)
                 .to_result(self)
         }
     }
@@ -427,7 +427,7 @@ impl Statement {
             cass_statement_set_paging_state_token(
                 self.inner(),
                 paging_state.as_ptr() as *const i8,
-                paging_state.len(),
+                paging_state.len() as u64,
             )
             .to_result(self)
         }
@@ -466,7 +466,7 @@ impl Statement {
 
     /// Binds null to a query or bound statement at the specified index.
     pub fn bind_null(&mut self, index: usize) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_null(self.inner(), index).to_result(self) }
+        unsafe { cass_statement_bind_null(self.inner(), index as u64).to_result(self) }
     }
 
     /// Binds a null to all the values with the specified name.
@@ -476,55 +476,56 @@ impl Statement {
     pub fn bind_null_by_name(&mut self, name: &str) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_null_by_name_n(self.inner(), name_ptr, name.len()).to_result(self)
+            cass_statement_bind_null_by_name_n(self.inner(), name_ptr, name.len() as u64)
+                .to_result(self)
         }
     }
 
     /// Binds a "tinyint" to a query or bound statement at the specified index.
     pub fn bind_int8(&mut self, index: usize, value: i8) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_int8(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_int8(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "tinyint" to all the values with the specified name.
     pub fn bind_int8_by_name(&mut self, name: &str, value: i8) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_int8_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_int8_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Binds an "smallint" to a query or bound statement at the specified index.
     pub fn bind_int16(&mut self, index: usize, value: i16) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_int16(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_int16(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "smallint" to all the values with the specified name.
     pub fn bind_int16_by_name(&mut self, name: &str, value: i16) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_int16_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_int16_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Binds an "int" to a query or bound statement at the specified index.
     pub fn bind_int32(&mut self, index: usize, value: i32) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_int32(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_int32(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds an "int" to all the values with the specified name.
     pub fn bind_int32_by_name(&mut self, name: &str, value: i32) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_int32_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_int32_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Binds a "date" to a query or bound statement at the specified index.
     pub fn bind_uint32(&mut self, index: usize, value: u32) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_uint32(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_uint32(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "date" to all the values with the specified name.
@@ -534,7 +535,7 @@ impl Statement {
     pub fn bind_uint32_by_name(&mut self, name: &str, value: u32) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_uint32_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_uint32_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
@@ -542,7 +543,7 @@ impl Statement {
     /// Binds a "bigint", "counter", "timestamp" or "time" to a query or
     /// bound statement at the specified index.
     pub fn bind_int64(&mut self, index: usize, value: i64) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_int64(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_int64(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "bigint", "counter", "timestamp" or "time" to all values
@@ -550,14 +551,14 @@ impl Statement {
     pub fn bind_int64_by_name(&mut self, name: &str, value: i64) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_int64_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_int64_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Binds a "float" to a query or bound statement at the specified index.
     pub fn bind_float(&mut self, index: usize, value: f32) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_float(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_float(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "float" to all the values with the specified name.
@@ -567,14 +568,14 @@ impl Statement {
     pub fn bind_float_by_name(&mut self, name: &str, value: f32) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_float_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_float_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Binds a "double" to a query or bound statement at the specified index.
     pub fn bind_double(&mut self, index: usize, value: f64) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_double(self.inner(), index, value).to_result(self) }
+        unsafe { cass_statement_bind_double(self.inner(), index as u64, value).to_result(self) }
     }
 
     /// Binds a "double" to all the values with the specified name.
@@ -584,7 +585,7 @@ impl Statement {
     pub fn bind_double_by_name(&mut self, name: &str, value: f64) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_double_by_name_n(self.inner(), name_ptr, name.len(), value)
+            cass_statement_bind_double_by_name_n(self.inner(), name_ptr, name.len() as u64, value)
                 .to_result(self)
         }
     }
@@ -594,7 +595,7 @@ impl Statement {
         unsafe {
             cass_statement_bind_bool(
                 self.inner(),
-                index,
+                index as u64,
                 if value { cass_true } else { cass_false },
             )
             .to_result(self)
@@ -611,7 +612,7 @@ impl Statement {
             cass_statement_bind_bool_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 if value { cass_true } else { cass_false },
             )
             .to_result(self)
@@ -623,7 +624,7 @@ impl Statement {
     pub fn bind_string(&mut self, index: usize, value: &str) -> Result<&mut Self> {
         unsafe {
             let value_ptr = value.as_ptr() as *const c_char;
-            cass_statement_bind_string_n(self.inner(), index, value_ptr, value.len())
+            cass_statement_bind_string_n(self.inner(), index as u64, value_ptr, value.len() as u64)
                 .to_result(self)
         }
     }
@@ -645,9 +646,9 @@ impl Statement {
             cass_statement_bind_string_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 value_cstr.as_ptr(),
-                value.len(),
+                value.len() as u64,
             )
             .to_result(self)
         }
@@ -656,8 +657,13 @@ impl Statement {
     /// Binds a "blob", "varint" or "custom" to a query or bound statement at the specified index.
     pub fn bind_bytes(&mut self, index: usize, value: Vec<u8>) -> Result<&mut Self> {
         unsafe {
-            cass_statement_bind_bytes(self.inner(), index, value.as_ptr(), value.len())
-                .to_result(self)
+            cass_statement_bind_bytes(
+                self.inner(),
+                index as u64,
+                value.as_ptr(),
+                value.len() as u64,
+            )
+            .to_result(self)
         }
     }
 
@@ -672,9 +678,9 @@ impl Statement {
             cass_statement_bind_bytes_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 value.as_mut_ptr(),
-                value.len(),
+                value.len() as u64,
             )
             .to_result(self)
         }
@@ -682,7 +688,9 @@ impl Statement {
 
     /// Binds a "uuid" or "timeuuid" to a query or bound statement at the specified index.
     pub fn bind_uuid(&mut self, index: usize, value: Uuid) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_uuid(self.inner(), index, value.inner()).to_result(self) }
+        unsafe {
+            cass_statement_bind_uuid(self.inner(), index as u64, value.inner()).to_result(self)
+        }
     }
 
     /// Binds a "uuid" or "timeuuid" to all the values
@@ -693,22 +701,34 @@ impl Statement {
     pub fn bind_uuid_by_name(&mut self, name: &str, value: Uuid) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_uuid_by_name_n(self.inner(), name_ptr, name.len(), value.inner())
-                .to_result(self)
+            cass_statement_bind_uuid_by_name_n(
+                self.inner(),
+                name_ptr,
+                name.len() as u64,
+                value.inner(),
+            )
+            .to_result(self)
         }
     }
 
     /// Binds an "inet" to a query or bound statement at the specified index.
     pub fn bind_inet(&mut self, index: usize, value: Inet) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_inet(self.inner(), index, value.inner()).to_result(self) }
+        unsafe {
+            cass_statement_bind_inet(self.inner(), index as u64, value.inner()).to_result(self)
+        }
     }
 
     /// Binds an "inet" to all the values with the specified name.
     pub fn bind_inet_by_name(&mut self, name: &str, value: Inet) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_inet_by_name_n(self.inner(), name_ptr, name.len(), value.inner())
-                .to_result(self)
+            cass_statement_bind_inet_by_name_n(
+                self.inner(),
+                name_ptr,
+                name.len() as u64,
+                value.inner(),
+            )
+            .to_result(self)
         }
     }
 
@@ -721,7 +741,7 @@ impl Statement {
     //                CassError::build(
     //                    cass_statement_bind_decimal(
     //                        self.inner(),
-    //                        index,
+    //                        index as u64,
     //                        value
     //                    )
     //                ).wrap(&mut self)
@@ -750,7 +770,9 @@ impl Statement {
 
     /// Bind a "map" to a query or bound statement at the specified index.
     pub fn bind_map(&mut self, index: usize, map: Map) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_collection(self.inner(), index, map.inner()).to_result(self) }
+        unsafe {
+            cass_statement_bind_collection(self.inner(), index as u64, map.inner()).to_result(self)
+        }
     }
 
     /// Bind a "map" to all the values with the
@@ -764,7 +786,7 @@ impl Statement {
             cass_statement_bind_collection_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 map.inner(),
             )
             .to_result(self)
@@ -773,7 +795,8 @@ impl Statement {
     /// Bind a "set" to a query or bound statement at the specified index.
     pub fn bind_set(&mut self, index: usize, collection: Set) -> Result<&mut Self> {
         unsafe {
-            cass_statement_bind_collection(self.inner(), index, collection.inner()).to_result(self)
+            cass_statement_bind_collection(self.inner(), index as u64, collection.inner())
+                .to_result(self)
         }
     }
 
@@ -788,7 +811,7 @@ impl Statement {
             cass_statement_bind_collection_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 collection.inner(),
             )
             .to_result(self)
@@ -798,7 +821,8 @@ impl Statement {
     /// Bind a "list" to a query or bound statement at the specified index.
     pub fn bind_list(&mut self, index: usize, collection: List) -> Result<&mut Self> {
         unsafe {
-            cass_statement_bind_collection(self.inner(), index, collection.inner()).to_result(self)
+            cass_statement_bind_collection(self.inner(), index as u64, collection.inner())
+                .to_result(self)
         }
     }
 
@@ -813,7 +837,7 @@ impl Statement {
             cass_statement_bind_collection_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 collection.inner(),
             )
             .to_result(self)
@@ -822,7 +846,9 @@ impl Statement {
 
     /// Bind a "tuple" to a query or bound statement at the specified index.
     pub fn bind_tuple(&mut self, index: usize, value: Tuple) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_tuple(self.inner(), index, value.inner()).to_result(self) }
+        unsafe {
+            cass_statement_bind_tuple(self.inner(), index as u64, value.inner()).to_result(self)
+        }
     }
 
     /// Bind a "tuple" to all the values with the specified name.
@@ -832,15 +858,22 @@ impl Statement {
     pub fn bind_tuple_by_name(&mut self, name: &str, value: Tuple) -> Result<&mut Self> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            cass_statement_bind_tuple_by_name_n(self.inner(), name_ptr, name.len(), value.inner())
-                .to_result(self)
+            cass_statement_bind_tuple_by_name_n(
+                self.inner(),
+                name_ptr,
+                name.len() as u64,
+                value.inner(),
+            )
+            .to_result(self)
         }
     }
 
     /// Bind a user defined type to a query or bound statement at the
     /// specified index.
     pub fn bind_user_type(&mut self, index: usize, value: &UserType) -> Result<&mut Self> {
-        unsafe { cass_statement_bind_user_type(self.inner(), index, value.inner()).to_result(self) }
+        unsafe {
+            cass_statement_bind_user_type(self.inner(), index as u64, value.inner()).to_result(self)
+        }
     }
 
     /// Bind a user defined type to a query or bound statement with the
@@ -851,7 +884,7 @@ impl Statement {
             cass_statement_bind_user_type_by_name_n(
                 self.inner(),
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 value.inner(),
             )
             .to_result(self)

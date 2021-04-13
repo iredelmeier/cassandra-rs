@@ -105,9 +105,9 @@ impl CustomPayload {
             Ok(cass_custom_payload_set_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 value.as_ptr(),
-                value.len(),
+                value.len() as u64,
             ))
         }
     }

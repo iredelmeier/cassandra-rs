@@ -92,7 +92,7 @@ impl UserType {
 
     /// Sets a null in a user defined type at the specified index.
     pub fn set_null(&mut self, index: usize) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_null(self.0, index).to_result(self) }
+        unsafe { cass_user_type_set_null(self.0, index as u64).to_result(self) }
     }
 
     /// Sets a null in a user defined type at the specified name.
@@ -103,13 +103,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_null_by_name_n(self.0, name_ptr, name_str.len()).to_result(self)
+            cass_user_type_set_null_by_name_n(self.0, name_ptr, name_str.len() as u64)
+                .to_result(self)
         }
     }
 
     /// Sets a "tinyint" in a user defined type at the specified index.
     pub fn set_int8(&mut self, index: usize, value: i8) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_int8(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_int8(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "tinyint" in a user defined type at the specified name.
@@ -120,14 +121,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_int8_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_int8_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Sets an "smallint" in a user defined type at the specified index.
     pub fn set_int16(&mut self, index: usize, value: i16) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_int16(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_int16(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "smallint" in a user defined type at the specified name.
@@ -138,14 +139,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_int16_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_int16_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Sets an "int" in a user defined type at the specified index.
     pub fn set_int32(&mut self, index: usize, value: i32) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_int32(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_int32(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "int" in a user defined type at the specified name.
@@ -156,14 +157,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_int32_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_int32_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Sets a "date" in a user defined type at the specified index.
     pub fn set_uint32(&mut self, index: usize, value: u32) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_uint32(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_uint32(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "date" in a user defined type at the specified name.
@@ -174,7 +175,7 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_uint32_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_uint32_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
@@ -182,7 +183,7 @@ impl UserType {
     /// Sets an "bigint", "counter", "timestamp" or "time" in a
     /// user defined type at the specified index.
     pub fn set_int64(&mut self, index: usize, value: i64) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_int64(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_int64(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "bigint", "counter", "timestamp" or "time" in a
@@ -194,14 +195,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_int64_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_int64_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Sets a "float" in a user defined type at the specified index.
     pub fn set_float(&mut self, index: usize, value: f32) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_float(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_float(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "float" in a user defined type at the specified name.
@@ -212,14 +213,14 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_float_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_float_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
 
     /// Sets an "double" in a user defined type at the specified index.
     pub fn set_double(&mut self, index: usize, value: f64) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_double(self.0, index, value).to_result(self) }
+        unsafe { cass_user_type_set_double(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "double" in a user defined type at the specified name.
@@ -231,7 +232,7 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_double_by_name_n(self.0, name_ptr, name_str.len(), value)
+            cass_user_type_set_double_by_name_n(self.0, name_ptr, name_str.len() as u64, value)
                 .to_result(self)
         }
     }
@@ -239,8 +240,12 @@ impl UserType {
     /// Sets a "boolean" in a user defined type at the specified index.
     pub fn set_bool(&mut self, index: usize, value: bool) -> Result<&mut Self> {
         unsafe {
-            cass_user_type_set_bool(self.0, index, if value { cass_true } else { cass_false })
-                .to_result(self)
+            cass_user_type_set_bool(
+                self.0,
+                index as u64,
+                if value { cass_true } else { cass_false },
+            )
+            .to_result(self)
         }
     }
 
@@ -255,7 +260,7 @@ impl UserType {
             cass_user_type_set_bool_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 if value { cass_true } else { cass_false },
             )
             .to_result(self)
@@ -271,7 +276,8 @@ impl UserType {
         unsafe {
             let value_str = value.into();
             let value_ptr = value_str.as_ptr() as *const c_char;
-            cass_user_type_set_string_n(self.0, index, value_ptr, value_str.len()).to_result(self)
+            cass_user_type_set_string_n(self.0, index as u64, value_ptr, value_str.len() as u64)
+                .to_result(self)
         }
     }
 
@@ -289,9 +295,9 @@ impl UserType {
             cass_user_type_set_string_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value_ptr,
-                value_str.len(),
+                value_str.len() as u64,
             )
             .to_result(self)
         }
@@ -301,7 +307,8 @@ impl UserType {
     /// Sets a "blob" "varint" or "custom" in a user defined type at the specified index.
     pub fn set_bytes(&mut self, index: usize, value: Vec<u8>) -> Result<&mut Self> {
         unsafe {
-            cass_user_type_set_bytes(self.0, index, value.as_ptr(), value.len()).to_result(self)
+            cass_user_type_set_bytes(self.0, index as u64, value.as_ptr(), value.len() as u64)
+                .to_result(self)
         }
     }
 
@@ -316,9 +323,9 @@ impl UserType {
             cass_user_type_set_bytes_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.as_ptr(),
-                value.len(),
+                value.len() as u64,
             )
             .to_result(self)
         }
@@ -329,7 +336,9 @@ impl UserType {
     where
         S: Into<Uuid>,
     {
-        unsafe { cass_user_type_set_uuid(self.0, index, value.into().inner()).to_result(self) }
+        unsafe {
+            cass_user_type_set_uuid(self.0, index as u64, value.into().inner()).to_result(self)
+        }
     }
 
     /// Sets a "uuid" or "timeuuid" in a user defined type at the specified name.
@@ -344,7 +353,7 @@ impl UserType {
             cass_user_type_set_uuid_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.into().inner(),
             )
             .to_result(self)
@@ -356,7 +365,9 @@ impl UserType {
     where
         S: Into<Inet>,
     {
-        unsafe { cass_user_type_set_inet(self.0, index, value.into().inner()).to_result(self) }
+        unsafe {
+            cass_user_type_set_inet(self.0, index as u64, value.into().inner()).to_result(self)
+        }
     }
 
     /// Sets a "inet" in a user defined type at the specified name.
@@ -371,7 +382,7 @@ impl UserType {
             cass_user_type_set_inet_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.into().inner(),
             )
             .to_result(self)
@@ -384,7 +395,8 @@ impl UserType {
         S: Into<List>,
     {
         unsafe {
-            cass_user_type_set_collection(self.0, index, value.into().inner()).to_result(self)
+            cass_user_type_set_collection(self.0, index as u64, value.into().inner())
+                .to_result(self)
         }
     }
 
@@ -400,7 +412,7 @@ impl UserType {
             cass_user_type_set_collection_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.into().inner(),
             )
             .to_result(self)
@@ -413,7 +425,8 @@ impl UserType {
         S: Into<Map>,
     {
         unsafe {
-            cass_user_type_set_collection(self.0, index, value.into().inner()).to_result(self)
+            cass_user_type_set_collection(self.0, index as u64, value.into().inner())
+                .to_result(self)
         }
     }
 
@@ -429,7 +442,7 @@ impl UserType {
             cass_user_type_set_collection_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.into().inner(),
             )
             .to_result(self)
@@ -442,7 +455,8 @@ impl UserType {
         S: Into<Set>,
     {
         unsafe {
-            cass_user_type_set_collection(self.0, index, value.into().inner()).to_result(self)
+            cass_user_type_set_collection(self.0, index as u64, value.into().inner())
+                .to_result(self)
         }
     }
 
@@ -458,7 +472,7 @@ impl UserType {
             cass_user_type_set_collection_by_name_n(
                 self.0,
                 name_ptr,
-                name_str.len(),
+                name_str.len() as u64,
                 value.into().inner(),
             )
             .to_result(self)
@@ -467,7 +481,7 @@ impl UserType {
 
     /// Sets a "tuple" in a user defined type at the specified index.
     pub fn set_tuple(&mut self, index: usize, value: Tuple) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_tuple(self.0, index, value.inner()).to_result(self) }
+        unsafe { cass_user_type_set_tuple(self.0, index as u64, value.inner()).to_result(self) }
     }
 
     /// Sets a "tuple" in a user defined type at the specified name.
@@ -478,14 +492,19 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_tuple_by_name_n(self.0, name_ptr, name_str.len(), value.inner())
-                .to_result(self)
+            cass_user_type_set_tuple_by_name_n(
+                self.0,
+                name_ptr,
+                name_str.len() as u64,
+                value.inner(),
+            )
+            .to_result(self)
         }
     }
 
     /// Sets a user defined type in a user defined type at the specified index.
     pub fn set_user_type(&mut self, index: usize, value: UserType) -> Result<&mut Self> {
-        unsafe { cass_user_type_set_user_type(self.0, index, value.0).to_result(self) }
+        unsafe { cass_user_type_set_user_type(self.0, index as u64, value.0).to_result(self) }
     }
 
     /// Sets a user defined type in a user defined type at the specified name.
@@ -496,7 +515,7 @@ impl UserType {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            cass_user_type_set_user_type_by_name_n(self.0, name_ptr, name_str.len(), value.0)
+            cass_user_type_set_user_type_by_name_n(self.0, name_ptr, name_str.len() as u64, value.0)
                 .to_result(self)
         }
     }

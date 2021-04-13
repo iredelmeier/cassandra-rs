@@ -65,7 +65,7 @@ impl KeyspaceMeta {
     pub fn table_by_name(&self, name: &str) -> Option<TableMeta> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let value = cass_keyspace_meta_table_by_name_n(self.0, name_ptr, name.len());
+            let value = cass_keyspace_meta_table_by_name_n(self.0, name_ptr, name.len() as u64);
             if value.is_null() {
                 None
             } else {
@@ -78,7 +78,7 @@ impl KeyspaceMeta {
     pub fn user_type_by_name(&self, name: &str) -> Option<ConstDataType> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let value = cass_keyspace_meta_user_type_by_name_n(self.0, name_ptr, name.len());
+            let value = cass_keyspace_meta_user_type_by_name_n(self.0, name_ptr, name.len() as u64);
             if value.is_null() {
                 None
             } else {
@@ -96,9 +96,9 @@ impl KeyspaceMeta {
             let value = cass_keyspace_meta_function_by_name_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 arguments_ptr,
-                arguments_str.len(),
+                arguments_str.len() as u64,
             );
             if value.is_null() {
                 None
@@ -117,9 +117,9 @@ impl KeyspaceMeta {
             let agg = cass_keyspace_meta_aggregate_by_name_n(
                 self.0,
                 name_ptr,
-                name.len(),
+                name.len() as u64,
                 arguments_ptr,
-                arguments_str.len(),
+                arguments_str.len() as u64,
             );
             if agg.is_null() {
                 None
@@ -150,7 +150,7 @@ impl KeyspaceMeta {
             let mut name = mem::zeroed();
             let mut name_length = mem::zeroed();
             cass_keyspace_meta_name(self.0, &mut name, &mut name_length);
-            raw2utf8(name, name_length).expect("must be utf8")
+            raw2utf8(name, name_length as usize).expect("must be utf8")
         }
     }
 
@@ -159,7 +159,7 @@ impl KeyspaceMeta {
     pub fn field_by_name(&self, name: &str) -> Option<MetadataFieldValue> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let value = cass_keyspace_meta_field_by_name_n(self.0, name_ptr, name.len());
+            let value = cass_keyspace_meta_field_by_name_n(self.0, name_ptr, name.len() as u64);
             if value.is_null() {
                 None
             } else {

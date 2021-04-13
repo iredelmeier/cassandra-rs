@@ -175,14 +175,19 @@ impl CassCollection for List {
 
     /// create a new list
     fn new(item_count: usize) -> Self {
-        unsafe { List::build(cass_collection_new(CASS_COLLECTION_TYPE_LIST, item_count)) }
+        unsafe {
+            List::build(cass_collection_new(
+                CASS_COLLECTION_TYPE_LIST,
+                item_count as u64,
+            ))
+        }
     }
 
     fn new_from_data_type(value: DataType, item_count: usize) -> Self {
         unsafe {
             List(cass_collection_new_from_data_type(
                 value.inner(),
-                item_count,
+                item_count as u64,
             ))
         }
     }
@@ -240,7 +245,8 @@ impl CassCollection for List {
     fn append_string(&mut self, value: &str) -> Result<&mut Self> {
         unsafe {
             let value_ptr = value.as_ptr() as *const c_char;
-            let result = cass_collection_append_string_n(self.inner(), value_ptr, value.len());
+            let result =
+                cass_collection_append_string_n(self.inner(), value_ptr, value.len() as u64);
             result.to_result(self)
         }
     }
@@ -248,7 +254,8 @@ impl CassCollection for List {
     /// Appends a "blob", "varint" or "custom" to the collection.
     fn append_bytes(&mut self, value: Vec<u8>) -> Result<&mut Self> {
         unsafe {
-            let bytes = cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len());
+            let bytes =
+                cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len() as u64);
             bytes.to_result(self)
         }
     }
@@ -312,14 +319,19 @@ impl CassCollection for Set {
 
     /// create a new list
     fn new(item_count: usize) -> Self {
-        unsafe { Set(cass_collection_new(CASS_COLLECTION_TYPE_SET, item_count)) }
+        unsafe {
+            Set(cass_collection_new(
+                CASS_COLLECTION_TYPE_SET,
+                item_count as u64,
+            ))
+        }
     }
 
     fn new_from_data_type(value: DataType, item_count: usize) -> Self {
         unsafe {
             Set(cass_collection_new_from_data_type(
                 value.inner(),
-                item_count,
+                item_count as u64,
             ))
         }
     }
@@ -376,7 +388,8 @@ impl CassCollection for Set {
     fn append_string(&mut self, value: &str) -> Result<&mut Self> {
         unsafe {
             let value_ptr = value.as_ptr() as *const c_char;
-            let result = cass_collection_append_string_n(self.inner(), value_ptr, value.len());
+            let result =
+                cass_collection_append_string_n(self.inner(), value_ptr, value.len() as u64);
             result.to_result(self)
         }
     }
@@ -384,7 +397,8 @@ impl CassCollection for Set {
     /// Appends a "blob", "varint" or "custom" to the collection.
     fn append_bytes(&mut self, value: Vec<u8>) -> Result<&mut Self> {
         unsafe {
-            let bytes = cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len());
+            let bytes =
+                cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len() as u64);
             bytes.to_result(self)
         }
     }
@@ -443,14 +457,19 @@ impl CassCollection for Map {
     type Value = _CassCollection;
     /// create a new list
     fn new(item_count: usize) -> Self {
-        unsafe { Map(cass_collection_new(CASS_COLLECTION_TYPE_MAP, item_count)) }
+        unsafe {
+            Map(cass_collection_new(
+                CASS_COLLECTION_TYPE_MAP,
+                item_count as u64,
+            ))
+        }
     }
 
     fn new_from_data_type(value: DataType, item_count: usize) -> Self {
         unsafe {
             Map(cass_collection_new_from_data_type(
                 value.inner(),
-                item_count,
+                item_count as u64,
             ))
         }
     }
@@ -508,7 +527,8 @@ impl CassCollection for Map {
     fn append_string(&mut self, value: &str) -> Result<&mut Self> {
         unsafe {
             let value_ptr = value.as_ptr() as *const c_char;
-            let result = cass_collection_append_string_n(self.inner(), value_ptr, value.len());
+            let result =
+                cass_collection_append_string_n(self.inner(), value_ptr, value.len() as u64);
             result.to_result(self)
         }
     }
@@ -516,7 +536,8 @@ impl CassCollection for Map {
     /// Appends a "blob", "varint" or "custom" to the collection.
     fn append_bytes(&mut self, value: Vec<u8>) -> Result<&mut Self> {
         unsafe {
-            let bytes = cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len());
+            let bytes =
+                cass_collection_append_bytes(self.inner(), value[..].as_ptr(), value.len() as u64);
             bytes.to_result(self)
         }
     }

@@ -318,7 +318,7 @@ impl<'a> Row<'a> {
     /// Get a particular column by index
     pub fn get_column(&self, index: usize) -> Result<Value> {
         unsafe {
-            let col = cass_row_get_column(self.0, index);
+            let col = cass_row_get_column(self.0, index as u64);
             if col.is_null() {
                 Err(CassErrorCode::LIB_INDEX_OUT_OF_BOUNDS.to_error())
             } else {
@@ -335,7 +335,7 @@ impl<'a> Row<'a> {
         unsafe {
             let name_str = name.into();
             let name_ptr = name_str.as_ptr() as *const c_char;
-            let col = cass_row_get_column_by_name_n(self.0, name_ptr, name_str.len());
+            let col = cass_row_get_column_by_name_n(self.0, name_ptr, name_str.len() as u64);
             if col.is_null() {
                 Err(CassErrorCode::LIB_INDEX_OUT_OF_BOUNDS.to_error())
             } else {

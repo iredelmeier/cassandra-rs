@@ -61,7 +61,7 @@ impl Protected<*mut _Tuple> for Tuple {
 impl Tuple {
     /// Creates a new tuple.
     pub fn new(item_count: usize) -> Self {
-        unsafe { Tuple(cass_tuple_new(item_count)) }
+        unsafe { Tuple(cass_tuple_new(item_count as u64)) }
     }
 
     /// Creates a new tuple from an existing data type.
@@ -76,50 +76,54 @@ impl Tuple {
 
     /// Sets an null in a tuple at the specified index.
     pub fn set_null(&mut self, index: usize) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_null(self.0, index).to_result(self) }
+        unsafe { cass_tuple_set_null(self.0, index as u64).to_result(self) }
     }
 
     /// Sets a "tinyint" in a tuple at the specified index.
     pub fn set_int8(&mut self, index: usize, value: i8) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_int8(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_int8(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "smallint" in a tuple at the specified index.
     pub fn set_int16(&mut self, index: usize, value: i16) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_int16(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_int16(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets an "int" in a tuple at the specified index.
     pub fn set_int32(&mut self, index: usize, value: i32) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_int32(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_int32(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "date" in a tuple at the specified index.
     pub fn set_uint32(&mut self, index: usize, value: u32) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_uint32(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_uint32(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "bigint", "counter", "timestamp" or "time" in a tuple at the
     /// specified index.
     pub fn set_int64(&mut self, index: usize, value: i64) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_int64(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_int64(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "float" in a tuple at the specified index.
     pub fn set_float(&mut self, index: usize, value: f32) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_float(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_float(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "double" in a tuple at the specified index.
     pub fn set_double(&mut self, index: usize, value: f64) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_double(self.0, index, value).to_result(self) }
+        unsafe { cass_tuple_set_double(self.0, index as u64, value).to_result(self) }
     }
 
     /// Sets a "boolean" in a tuple at the specified index.
     pub fn set_bool(&mut self, index: usize, value: bool) -> Result<&mut Self> {
         unsafe {
-            cass_tuple_set_bool(self.0, index, if value { cass_true } else { cass_false })
-                .to_result(self)
+            cass_tuple_set_bool(
+                self.0,
+                index as u64,
+                if value { cass_true } else { cass_false },
+            )
+            .to_result(self)
         }
     }
 
@@ -131,13 +135,17 @@ impl Tuple {
         unsafe {
             let value_str = value.into();
             let value_ptr = value_str.as_ptr() as *const c_char;
-            cass_tuple_set_string_n(self.0, index, value_ptr, value_str.len()).to_result(self)
+            cass_tuple_set_string_n(self.0, index as u64, value_ptr, value_str.len() as u64)
+                .to_result(self)
         }
     }
 
     /// Sets a "blob", "varint" or "custom" in a tuple at the specified index.
     pub fn set_bytes(&mut self, index: usize, value: Vec<u8>) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_bytes(self.0, index, value.as_ptr(), value.len()).to_result(self) }
+        unsafe {
+            cass_tuple_set_bytes(self.0, index as u64, value.as_ptr(), value.len() as u64)
+                .to_result(self)
+        }
     }
 
     /// Sets a "uuid" or "timeuuid" in a tuple at the specified index.
@@ -145,13 +153,13 @@ impl Tuple {
     where
         S: Into<Uuid>,
     {
-        unsafe { cass_tuple_set_uuid(self.0, index, value.into().inner()).to_result(self) }
+        unsafe { cass_tuple_set_uuid(self.0, index as u64, value.into().inner()).to_result(self) }
     }
 
     /// Sets an "inet" in a tuple at the specified index.
     pub fn set_inet(&mut self, index: usize, value: IpAddr) -> Result<&mut Self> {
         let inet = Inet::from(&value);
-        unsafe { cass_tuple_set_inet(self.0, index, inet.inner()).to_result(self) }
+        unsafe { cass_tuple_set_inet(self.0, index as u64, inet.inner()).to_result(self) }
     }
 
     /// Sets a list in a tuple at the specified index.
@@ -159,7 +167,9 @@ impl Tuple {
     where
         S: Into<List>,
     {
-        unsafe { cass_tuple_set_collection(self.0, index, value.into().inner()).to_result(self) }
+        unsafe {
+            cass_tuple_set_collection(self.0, index as u64, value.into().inner()).to_result(self)
+        }
     }
 
     /// Sets a map in a tuple at the specified index.
@@ -167,7 +177,9 @@ impl Tuple {
     where
         S: Into<Map>,
     {
-        unsafe { cass_tuple_set_collection(self.0, index, value.into().inner()).to_result(self) }
+        unsafe {
+            cass_tuple_set_collection(self.0, index as u64, value.into().inner()).to_result(self)
+        }
     }
 
     /// Sets a set" in a tuple at the specified index.
@@ -175,17 +187,19 @@ impl Tuple {
     where
         S: Into<Set>,
     {
-        unsafe { cass_tuple_set_collection(self.0, index, value.into().inner()).to_result(self) }
+        unsafe {
+            cass_tuple_set_collection(self.0, index as u64, value.into().inner()).to_result(self)
+        }
     }
 
     /// Sets a "tuple" in a tuple at the specified index.
     pub fn set_tuple(&mut self, index: usize, value: Tuple) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_tuple(self.0, index, value.0).to_result(self) }
+        unsafe { cass_tuple_set_tuple(self.0, index as u64, value.0).to_result(self) }
     }
 
     /// Sets a "udt" in a tuple at the specified index.
     pub fn set_user_type(&mut self, index: usize, value: &UserType) -> Result<&mut Self> {
-        unsafe { cass_tuple_set_user_type(self.0, index, value.inner()).to_result(self) }
+        unsafe { cass_tuple_set_user_type(self.0, index as u64, value.inner()).to_result(self) }
     }
 }
 

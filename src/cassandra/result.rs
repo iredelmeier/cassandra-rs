@@ -100,7 +100,7 @@ impl CassResult {
         unsafe {
             let mut name = mem::zeroed();
             let mut name_length = mem::zeroed();
-            cass_result_column_name(self.0, index, &mut name, &mut name_length)
+            cass_result_column_name(self.0, index as u64, &mut name, &mut name_length)
                 .to_result(())
                 .and_then(|_| {
                     let slice = slice::from_raw_parts(name as *const u8, name_length as usize);
@@ -111,13 +111,13 @@ impl CassResult {
 
     /// Gets the column type at index for the specified result.
     pub fn column_type(&self, index: usize) -> ValueType {
-        unsafe { ValueType::build(cass_result_column_type(self.0, index)) }
+        unsafe { ValueType::build(cass_result_column_type(self.0, index as u64)) }
     }
 
     /// Gets the column datatype at index for the specified result.
     pub fn column_data_type(&self, index: usize) -> ConstDataType {
         // TODO: can return NULL
-        unsafe { ConstDataType::build(cass_result_column_data_type(self.0, index)) }
+        unsafe { ConstDataType::build(cass_result_column_data_type(self.0, index as u64)) }
     }
 
     /// Gets the first row of the result.
@@ -152,13 +152,9 @@ impl CassResult {
         unsafe {
             let mut token_ptr = mem::zeroed();
             let mut token_length = mem::zeroed();
-            cass_result_paging_state_token(
-                self.0,
-                &mut token_ptr,
-                &mut token_length,
-            )
-            .to_result(())
-            .map(|_| {
+            cass_result_paging_state_token(self.0, &mut token_ptr, &mut token_length)
+                .to_result(())
+                .map(|_| {
                     Some(
                         slice::from_raw_parts(token_ptr as *const u8, token_length as usize)
                             .to_vec(),
@@ -173,7 +169,7 @@ impl CassResult {
         unsafe {
             ResultIterator(
                 cass_iterator_from_result(self.0),
-                cass_result_row_count(self.0),
+                cass_result_row_count(self.0) as usize,
                 PhantomData,
             )
         }

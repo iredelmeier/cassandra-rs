@@ -52,7 +52,7 @@ impl AggregateMeta {
             let mut name = mem::zeroed();
             let mut name_length = mem::zeroed();
             cass_aggregate_meta_name(self.0, &mut name, &mut name_length);
-            raw2utf8(name, name_length).expect("must be utf8")
+            raw2utf8(name, name_length as usize).expect("must be utf8")
         }
     }
 
@@ -62,19 +62,19 @@ impl AggregateMeta {
             let mut name = mem::zeroed();
             let mut name_length = mem::zeroed();
             cass_aggregate_meta_full_name(self.0, &mut name, &mut name_length);
-            raw2utf8(name, name_length).expect("must be utf8")
+            raw2utf8(name, name_length as usize).expect("must be utf8")
         }
     }
 
     /// Gets the number of arguments this aggregate takes.
     pub fn argument_count(&self) -> usize {
-        unsafe { cass_aggregate_meta_argument_count(self.0) }
+        unsafe { cass_aggregate_meta_argument_count(self.0) as usize }
     }
 
     /// Gets the aggregate's argument type for the provided index.
     pub fn argument_type(&self, index: usize) -> ConstDataType {
         // TODO: can return NULL
-        unsafe { ConstDataType::build(cass_aggregate_meta_argument_type(self.0, index)) }
+        unsafe { ConstDataType::build(cass_aggregate_meta_argument_type(self.0, index as u64)) }
     }
 
     /// Gets the aggregate's argument return type.
@@ -107,7 +107,7 @@ impl AggregateMeta {
     pub fn field_by_name(&self, name: &str) -> Option<Value> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let agg = cass_aggregate_meta_field_by_name_n(self.0, name_ptr, name.len());
+            let agg = cass_aggregate_meta_field_by_name_n(self.0, name_ptr, name.len() as u64);
             if agg.is_null() {
                 None
             } else {

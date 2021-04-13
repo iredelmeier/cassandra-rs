@@ -81,7 +81,7 @@ impl Ssl {
     pub fn add_trusted_cert(&mut self, cert: &str) -> Result<&mut Self> {
         unsafe {
             let cert_ptr = cert.as_ptr() as *const c_char;
-            cass_ssl_add_trusted_cert_n(self.0, cert_ptr, cert.len()).to_result(self)
+            cass_ssl_add_trusted_cert_n(self.0, cert_ptr, cert.len() as u64).to_result(self)
         }
     }
 
@@ -106,7 +106,7 @@ impl Ssl {
     pub fn set_cert(&mut self, cert: &str) -> Result<&mut Self> {
         unsafe {
             let cert_ptr = cert.as_ptr() as *const c_char;
-            cass_ssl_set_cert_n(self.0, cert_ptr, cert.len()).to_result(self)
+            cass_ssl_set_cert_n(self.0, cert_ptr, cert.len() as u64).to_result(self)
         }
     }
 
@@ -116,8 +116,14 @@ impl Ssl {
         unsafe {
             let key_ptr = key.as_ptr() as *const c_char;
             let password_ptr = key.as_ptr() as *const c_char;
-            cass_ssl_set_private_key_n(self.0, key_ptr, key.len(), password_ptr, password.len())
-                .to_result(self)
+            cass_ssl_set_private_key_n(
+                self.0,
+                key_ptr,
+                key.len() as u64,
+                password_ptr,
+                password.len() as u64,
+            )
+            .to_result(self)
         }
     }
 }

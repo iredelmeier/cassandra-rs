@@ -67,7 +67,7 @@ impl ColumnMeta {
     pub fn field_by_name(&self, name: &str) -> Option<Value> {
         unsafe {
             let name_ptr = name.as_ptr() as *const c_char;
-            let field = cass_column_meta_field_by_name_n(self.0, name_ptr, name.len());
+            let field = cass_column_meta_field_by_name_n(self.0, name_ptr, name.len() as u64);
             if field.is_null() {
                 None
             } else {
